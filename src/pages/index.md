@@ -1,3 +1,3 @@
 ---
-frameSrc: /child.html  
+frameSrc: child.html  
 ---
