@@ -14,14 +14,11 @@ module.exports = {
   siteMetadata: {
     pages: [
       {
-        title: 'Project Firefly',
+        title: 'Testing',
         path: '/'
       }
-    ],
-    docs: {
-      path: 'https://www.adobe.io/content/udp/en/apis/experienceplatform/project-firefly/docs.html'
-    }
+    ]
   },
   plugins: [`@adobe/gatsby-theme-aio`],
-  pathPrefix: process.env.PATH_PREFIX || '/dev-site-product-template/'
+  pathPrefix: process.env.PATH_PREFIX || '/testing/'
 };
