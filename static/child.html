@@ -45,8 +45,10 @@
           log(token, data[0]);
           log(profile, data[1]);
 
-          // Update parent height to avoid duplicated scrollbar issue
-          parent.setHeight(`${document.body.scrollHeight}px`);
+          if (data[0] && data[1]) {
+            // Update parent height to avoid duplicated scrollbar issue
+            parent.setHeight(`${document.body.scrollHeight}px`);
+          }
         });
       });
     };
