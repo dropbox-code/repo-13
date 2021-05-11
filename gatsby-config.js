@@ -14,9 +14,13 @@ module.exports = {
   siteMetadata: {
     pages: [
       {
-        title: 'Testing',
+        title: 'Test',
         path: '/'
-      }
+      },
+      {
+        title: 'Frame',
+        path: '/frame/'
+      },
     ]
   },
   plugins: [`@adobe/gatsby-theme-aio`],
