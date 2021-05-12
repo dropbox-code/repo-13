@@ -1,3 +1,3 @@
-<Hero slots="heading" />
-
-# Test page
+---
+frameSrc: child.html  
+---
