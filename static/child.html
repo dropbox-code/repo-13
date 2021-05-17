@@ -17,41 +17,43 @@
   </style>
 </head>
 <body>
-  <button id="signIn" disabled>Sign in</button>
-  <button id="signOut" disabled>Sign out</button>
-  <pre id="token"></pre>
-  <pre id="profile"></pre>
+<button id="signIn" disabled>Sign in</button>
+<button id="signOut" disabled>Sign out</button>
+<pre id="url"></pre>
+<pre id="token"></pre>
+<pre id="profile"></pre>
 
-  <script>
-    const log = (el, info) => el.textContent = JSON.stringify(info, null, 4);
+<script>
+  const log = (el, info) => el.textContent = typeof info === 'object' ? JSON.stringify(info, null, 4) : String(info);
 
-    // Child needs to connect after parent
-    window.onload = () => {
-      const connection = Penpal.connectToParent({timeout: 5000, debug: true});
+  // Child needs to connect after parent
+  window.onload = () => {
+    const connection = Penpal.connectToParent({timeout: 5000, debug: true});
 
-      // Enable buttons once connected
-      connection.promise.then((parent) => {
-        signIn.onclick = () => parent.signIn();
-        signOut.onclick = () => parent.signOut();
-        signIn.disabled = false;
-        signOut.disabled = false;
+    // Enable buttons once connected
+    connection.promise.then((parent) => {
+      signIn.onclick = () => parent.signIn();
+      signOut.onclick = () => parent.signOut();
+      signIn.disabled = false;
+      signOut.disabled = false;
 
-        // Access IMS info
-        Promise.all([
-          parent.getIMSAccessToken(),
-          parent.getIMSProfile()
-        ]).then((data) => {
-          // Log info
-          log(token, data[0]);
-          log(profile, data[1]);
+      // Access parent info
+      Promise.all([
+        parent.getURL(),
+        parent.getIMSAccessToken(),
+        parent.getIMSProfile()
+      ]).then((data) => {
+        // Log info
+        console.log(new URL(data[0]));
+        log(url, data[0]);
+        log(token, data[1]);
+        log(profile, data[2]);
 
-          if (data[0] && data[1]) {
-            // Update parent height to avoid duplicated scrollbar issue
-            parent.setHeight(`${document.body.scrollHeight}px`);
-          }
-        });
+        // Update parent height to avoid duplicated scrollbar issue
+        parent.setHeight(`${document.body.scrollHeight}px`);
       });
-    };
-  </script>
+    });
+  };
+</script>
 </body>
 </html>
