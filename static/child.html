@@ -25,16 +25,24 @@
 
 <script>
   const log = (el, info) => el.textContent = typeof info === 'object' ? JSON.stringify(info, null, 4) : String(info);
+  let parentConnection = null;
 
   // Child needs to connect after parent
   window.onload = () => {
+
     const connection = Penpal.connectToParent({
       methods: {
         onShow: () => {
-          alert('Iframe is visible');
+          console.log('Iframe is visible');
+
+          if (parentConnection) {
+            parentConnection.getURL().then((data) => {
+              log(url, data);
+            })
+          }
         },
         onHide: () => {
-          alert('Iframe is hidden');
+          console.log('Iframe is hidden');
         }
       },
       timeout: 5000,
@@ -43,6 +51,7 @@
 
     // Enable buttons once connected
     connection.promise.then((parent) => {
+      parentConnection = parent;
       signIn.onclick = () => parent.signIn();
       signOut.onclick = () => parent.signOut();
       signIn.disabled = false;
@@ -55,7 +64,6 @@
         parent.getIMSProfile()
       ]).then((data) => {
         // Log info
-        console.log(new URL(data[0]));
         log(url, data[0]);
         log(token, data[1]);
         log(profile, data[2]);

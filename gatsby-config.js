@@ -20,6 +20,10 @@ module.exports = {
       {
         title: 'Another page',
         path: 'another.md'
+      },
+      {
+        title: 'Frame',
+        path: 'frame.md?ref=frame'
       }
     ]
   },
