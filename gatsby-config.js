@@ -15,7 +15,11 @@ module.exports = {
     pages: [
       {
         title: 'Frame test',
-        path: '/'
+        path: 'index.md'
+      },
+      {
+        title: 'Another page',
+        path: 'another.md'
       }
     ]
   },
