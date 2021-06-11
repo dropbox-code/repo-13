@@ -14,16 +14,8 @@ module.exports = {
   siteMetadata: {
     pages: [
       {
-        title: 'Frame test',
+        title: 'Firefly App',
         path: 'index.md'
-      },
-      {
-        title: 'Another page',
-        path: 'another.md'
-      },
-      {
-        title: 'Frame',
-        path: 'frame.md?ref=frame'
       }
     ]
   },

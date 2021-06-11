@@ -1,3 +1,0 @@
----
-frameSrc: child.html  
----
