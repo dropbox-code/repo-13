@@ -1,3 +1,7 @@
 ---
-frameSrc: https://53444-ringelsandbox-stage.adobeio-static.net/index.html  
+layout: none  
 ---
+
+import RapiDoc from '../components/RapiDoc'
+
+<RapiDoc />

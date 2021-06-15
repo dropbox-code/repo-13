@@ -14,7 +14,7 @@ module.exports = {
   siteMetadata: {
     pages: [
       {
-        title: 'Firefly App',
+        title: 'CC Libraries API',
         path: 'index.md'
       }
     ]
