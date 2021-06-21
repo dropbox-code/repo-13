@@ -5,7 +5,7 @@ const RapiDoc = () => {
     <rapi-doc
       theme = "light"
       show-header = "false"
-      spec-url = "https://raw.githubusercontent.com/AdobeDocs/cc-libraries-api-spec/main/openapi.json"
+      spec-url = "https://raw.githubusercontent.com/AdobeDocs/cis-photoshop-api-docs/main/static/swagger.json"
       render-style = "read"
       nav-bg-color="#fafafa"
       bg-color="#fff"
