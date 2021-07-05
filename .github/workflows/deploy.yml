@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       env:
-        description: 'Deploy environment (dev|prod|dev prod)'
+        description: 'Deploy env (dev|prod|dev prod)'
         required: true
         default: 'dev'
       clean:
