@@ -3,20 +3,15 @@ on:
   workflow_dispatch:
     inputs:
       env:
-        description: 'Deploy env (dev|prod|dev prod)'
+        description: 'Deploy to dev|prod'
         required: true
         default: 'dev'
-      clean:
-        description: 'Clean cache (yes|no)'
-        required: true
-        default: 'no'
 jobs:
   set-state:
     runs-on: ubuntu-latest
     outputs:
       deploy_prod: ${{ contains(github.event.inputs.env, 'prod') }}
       deploy_dev: ${{ contains(github.event.inputs.env, 'dev') }}
-      clean_cache: ${{ contains(github.event.inputs.clean, 'yes') }}
       path_prefix: ${{ steps.extract_path_prefix.outputs.path_prefix }}
       branch_short_ref: ${{ steps.extract_branch.outputs.branch }}
     steps:
@@ -51,7 +46,6 @@ jobs:
     steps:
       - run: echo "Deploy to dev - ${{ needs.set-state.outputs.deploy_dev }}"
       - run: echo "Deploy to prod - ${{ needs.set-state.outputs.deploy_prod }}"
-      - run: echo "Clean cache - ${{ needs.set-state.outputs.clean_cache }}"
       - run: echo "Repository org - ${{ github.event.repository.owner.login }}"
       - run: echo "Repository name - ${{ github.event.repository.name }}"
       - run: echo "Repository branch - ${{ needs.set-state.outputs.branch_short_ref }}"
@@ -86,17 +80,13 @@ jobs:
       - name: Gatsby Cache Folder
         uses: actions/cache@v2
         with:
-          key: gatsby-cache-folder
+          key: gatsby-cache-folder-${{ needs.set-state.outputs.branch_short_ref }}-${{ secrets.CACHE_VERSION }}
           path: .cache
       - name: Gatsby Public Folder
         uses: actions/cache@v2
         with:
-          key: gatsby-public-folder
+          key: gatsby-public-folder-${{ needs.set-state.outputs.branch_short_ref }}-${{ secrets.CACHE_VERSION }}
           path: public
-      - name: Clean Cache
-        if: needs.set-state.outputs.clean_cache == 'true'
-        run: |
-          npm run clean
       - name: Build
         run: |
           npm run build
@@ -165,10 +155,6 @@ jobs:
         with:
           key: gatsby-public-folder
           path: public
-      - name: Clean Cache
-        if: needs.set-state.outputs.clean_cache == 'true'
-        run: |
-          npm run clean
       - name: Build
         run: |
           npm run build
