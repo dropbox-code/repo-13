@@ -77,16 +77,15 @@ jobs:
           persist-credentials: false
       - name: NPM Install
         uses: bahmutov/npm-install@v1
-      - name: Gatsby Cache Folder
+      - name: Gatsby Cache
         uses: actions/cache@v2
         with:
-          key: gatsby-cache-folder-${{ needs.set-state.outputs.branch_short_ref }}-${{ secrets.CACHE_VERSION }}
-          path: .cache
-      - name: Gatsby Public Folder
-        uses: actions/cache@v2
-        with:
-          key: gatsby-public-folder-${{ needs.set-state.outputs.branch_short_ref }}-${{ secrets.CACHE_VERSION }}
-          path: public
+          path: |
+            public
+            .cache
+          key: ${{ needs.set-state.outputs.branch_short_ref }}-gatsby-cache${{ secrets.GATSBY_CACHE_VERSION }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ needs.set-state.outputs.branch_short_ref }}-gatsby-cache${{ secrets.GATSBY_CACHE_VERSION }}-
       - name: Build
         run: |
           npm run build
