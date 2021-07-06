@@ -12,7 +12,7 @@ on:
         default: 'no'
 jobs:
   set-state:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     outputs:
       deploy_prod: ${{ contains(github.event.inputs.env, 'prod') }}
       deploy_dev: ${{ contains(github.event.inputs.env, 'dev') }}
@@ -47,7 +47,7 @@ jobs:
 
   echo-state:
     needs: [set-state]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - run: echo "Deploy to dev - ${{ needs.set-state.outputs.deploy_dev }}"
       - run: echo "Deploy to prod - ${{ needs.set-state.outputs.deploy_prod }}"
@@ -59,7 +59,7 @@ jobs:
 
   pre-build-dev:
     needs: [set-state]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     if: needs.set-state.outputs.deploy_dev == 'true'
     steps:
       - name: check dev azure connection string
@@ -75,7 +75,7 @@ jobs:
       run:
         shell: bash
     needs: [set-state, pre-build-dev]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.1 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
@@ -134,7 +134,7 @@ jobs:
 
   pre-build-production:
     needs: [set-state]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     if: needs.set-state.outputs.deploy_prod == 'true'
     steps:
       - name: check prod azure connection string
@@ -150,7 +150,7 @@ jobs:
       run:
         shell: bash
     needs: [set-state, pre-build-production]
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.1 # If you're using actions/checkout@v2 you must set persist-credentials to false in most cases for the deployment to work correctly.
