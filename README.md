@@ -1,4 +1,4 @@
-# Adobe I/O Theme
+# Documentation for the Adobe I/O Theme
 
 The Adobe I/O Theme powers all the Adobe `developer.adobe.com` sites to ensure that content is consistent across all the sites.
 
@@ -29,7 +29,7 @@ Corepack is a binary shipped with all Node.js releases starting from 16.10.
 
 That's it. For more information on Yarn 3 usage, see [Yarn usage](https://yarnpkg.com/getting-started/usage).
 
-## Theme usage
+## Build the Theme Documentation
 
 [Gatsby Themes](https://www.gatsbyjs.com/docs/themes/what-are-gatsby-themes/) allow site functionality to be packaged as a standalone product for others to easily reuse.
 Using a theme, all of your default configuration lives in an npm package.
@@ -57,104 +57,6 @@ Using a theme, all of your default configuration lives in an npm package.
     <li><a href="https://github.com/adobedocs/dev-site-product-template/">Repository</a></li>
   </ul>
 </details>
-
-## Contents
-
-- [Adobe I/O Theme](#adobe-io-theme)
-  - [Prerequisites](#prerequisites)
-  - [Theme usage](#theme-usage)
-  - [Contents](#contents)
-  - [Getting started](#getting-started)
-    - [Using GitHub repository templates](#using-github-repository-templates)
-    - [Using the Adobe I/O CLI](#using-the-adobe-io-cli)
-  - [Content structure](#content-structure)
-    - [Frontmatter](#frontmatter)
-      - [Edition keyword](#edition-keyword)
-      - [Contributor name and link keywords](#contributor-name-and-link-keywords)
-    - [Markdown pages](#markdown-pages)
-    - [Links](#links)
-      - [Anchor links for headings](#anchor-links-for-headings)
-      - [Internal links](#internal-links)
-      - [External links](#external-links)
-    - [Assets](#assets)
-  - [Configuration](#configuration)
-    - [Environment variables](#environment-variables)
-      - [GitHub Contributors](#github-contributors)
-      - [Analytics and Feedback component](#analytics-and-feedback-component)
-      - [Identity Management Services](#identity-management-services)
-    - [Algolia local search testing](#algolia-local-search-testing)
-  - [Global Navigation](#global-navigation)
-  - [Menus](#menus)
-  - [Home link](#home-link)
-  - [Side Navigation](#side-navigation)
-    - [Variations](#variations)
-      - [Single-level side navigation](#single-level-side-navigation)
-      - [Single-level side navigation with headers](#single-level-side-navigation-with-headers)
-      - [Multi-level side navigation](#multi-level-side-navigation)
-      - [Auto-collapsing of multi-level side navigation](#auto-collapsing-of-multi-level-side-navigation)
-      - [Use descriptive titles](#use-descriptive-titles)
-      - [Be concise](#be-concise)
-      - [Use sentence case](#use-sentence-case)
-      - [Use the right variation](#use-the-right-variation)
-      - [Avoid deep nested menus](#avoid-deep-nested-menus)
-      - [Use consistent multi-level behavior](#use-consistent-multi-level-behavior)
-  - [Versions](#versions)
-  - [Building the site](#building-the-site)
-    - [Adding a Path Prefix](#adding-a-path-prefix)
-  - [Deploying the site](#deploying-the-site)
-    - [Preview on GitHub Pages](#preview-on-github-pages)
-    - [Deploy to Azure Storage Static Websites](#deploy-to-azure-storage-static-websites)
-  - [Writing Enhanced Markdown](#writing-enhanced-markdown)
-    - [Metadata with Front matter](#metadata-with-front-matter)
-  - [<pre>](#pre)
-  - [description: This is the guides overview page of Adobe Analytics](#description-this-is-the-guides-overview-page-of-adobe-analytics)
-  - [<pre>](#pre-1)
-  - [- https://github.com/simonwex](#--httpsgithubcomsimonwex)
-  - [<pre>](#pre-2)
-  - [hideBreadcrumbNav: false](#hidebreadcrumbnav-false)
-    - [OpenAPI](#openapi)
-  - [openAPISpec: https://raw.githubusercontent.com/AdobeDocs/analytics-2.0-apis/master/docs/swagger.json](#openapispec-httpsrawgithubusercontentcomadobedocsanalytics-20-apismasterdocsswaggerjson)
-    - [JSDoc](#jsdoc)
-  - [jsDoc: true](#jsdoc-true)
-    - [MDX](#mdx)
-    - [Modular Content System](#modular-content-system)
-    - [JSX Blocks](#jsx-blocks)
-    - [Hero Block](#hero-block)
-    - [Resources Block](#resources-block)
-    - [Discover Block](#discover-block)
-    - [Code Block](#code-block)
-      - [Request](#request)
-      - [Request](#request-1)
-      - [Response](#response)
-    - [InlineAlert block (Updated: 2022-06-08)](#inlinealert-block-updated-2022-06-08)
-      - [Anatomy of an InlineAlert block](#anatomy-of-an-inlinealert-block)
-      - [Simple InlineAlert](#simple-inlinealert)
-      - [Richer InlineAlert](#richer-inlinealert)
-    - [Media Block](#media-block)
-    - [Announcement Block](#announcement-block)
-    - [Summary Block](#summary-block)
-    - [Title Block](#title-block)
-    - [Text Block](#text-block)
-    - [Tabs Block](#tabs-block)
-    - [Product Card](#product-card)
-    - [Product Card Grid](#product-card-grid)
-    - [Resource Card](#resource-card)
-    - [Carousel](#carousel)
-    - [Edition](#edition)
-    - [Embedding markdown documents and filtering content](#embedding-markdown-documents-and-filtering-content)
-      - [Embedding local markdown files](#embedding-local-markdown-files)
-      - [Embedding external markdown files](#embedding-external-markdown-files)
-      - [Filtering content with Variant Blocks](#filtering-content-with-variant-blocks)
-  - [Customizations](#customizations)
-    - [Custom layout](#custom-layout)
-    - [Frame](#frame)
-    - [Theming](#theming)
-  - [Upgrading](#upgrading)
-    - [Locally](#locally)
-    - [Automated](#automated)
-  - [Issue tracker](#issue-tracker)
-  - [Contributing](#contributing)
-  - [Releases](#releases)
 
 ## Getting started
 
