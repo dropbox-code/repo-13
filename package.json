@@ -32,7 +32,8 @@
     "clean": "yarn workspace example clean",
     "format": "npx prettier --write '**/*.{js,json}'",
     "cy:open": "cypress open",
-    "test:e2e": "start-server-and-test start http://localhost:9000 cy:open"
+    "test:e2e": "start-server-and-test start http://localhost:9000 cy:open",
+    "storybook": "yarn workspace @adobe/gatsby-theme-aio storybook"
   },
   "packageManager": "yarn@3.2.3"
 }

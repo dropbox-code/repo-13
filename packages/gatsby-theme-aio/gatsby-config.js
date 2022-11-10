@@ -17,7 +17,12 @@ require('dotenv').config({
 const { DESKTOP_SCREEN_WIDTH } = require('./conf/globals');
 const indexSettings = require('./algolia/index-settings');
 const indexRecords = require('./algolia/index-records');
+const mermaidThemeVariables = require('./mermaid/themeVariables');
+const mermaidThemeCSS = require('./mermaid/themeCSS');
+const flowchart = require('./mermaid/flowchart');
 let isDryRun = true;
+
+console.log(mermaidThemeVariables);
 
 let indexingMode = process.env.ALGOLIA_INDEXATION_MODE;
 if (
@@ -75,6 +80,7 @@ module.exports = {
           default: require.resolve(`./src/components/MDXFilter/index.js`),
         },
         plugins: [
+          `gatsby-remark-mermaid`,
           `gatsby-transformer-remark`,
           `gatsby-remark-autolink-headers`,
           `gatsby-remark-copy-linked-files`,
@@ -83,6 +89,22 @@ module.exports = {
         gatsbyRemarkPlugins: [
           {
             resolve: `gatsby-transformer-remark`,
+          },
+          {
+            resolve: 'gatsby-remark-mermaid',
+            options: {
+              language: 'mermaid',
+              theme: 'base',
+              viewport: {
+                width: 900,
+                height: 300
+              },
+              mermaidOptions: {
+                themeVariables: mermaidThemeVariables,
+                themeCSS: mermaidThemeCSS,
+                flowchart: flowchart,
+              },
+            },
           },
           {
             resolve: `gatsby-remark-autolink-headers`,

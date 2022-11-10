@@ -43,6 +43,14 @@ Adobe Product API offers limitless ways to integrate your most important custome
 
 <Overview />
 
+## Mermaid integration
+
+```mermaid
+graph LR
+storybook[Integrate Storybook]:::red
+storybook --> mermaid[Add Mermaid] & theme[Add theme fixes and features]
+```
+
 ## Discover
 
 <DiscoverBlock slots="heading, link, text"/>
