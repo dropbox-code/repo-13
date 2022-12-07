@@ -103,6 +103,7 @@ export function createProvider(
         coinbase: hardhatNetConfig.coinbase,
         genesisAccounts: accounts,
         allowUnlimitedContractSize: hardhatNetConfig.allowUnlimitedContractSize,
+        confidential: hardhatNetConfig.confidential,
         allowBlocksWithSameTimestamp:
           hardhatNetConfig.allowBlocksWithSameTimestamp ?? false,
         initialDate:
@@ -115,7 +116,6 @@ export function createProvider(
           paths !== undefined ? getForkCacheDirPath(paths) : undefined,
       },
       new ModulesLogger(hardhatNetConfig.loggingEnabled),
-      artifacts
     );
   } else {
     const HttpProvider = importProvider<

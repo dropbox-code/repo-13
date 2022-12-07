@@ -24,7 +24,7 @@ import {
   RunBlockResult,
   RunTxResult,
   VM,
-} from "@nomicfoundation/ethereumjs-vm";
+} from "@oasislabs/ethereumjs-vm";
 import { EVM, EVMResult } from "@nomicfoundation/ethereumjs-evm";
 import { ERROR } from "@nomicfoundation/ethereumjs-evm/dist/exceptions";
 import {
@@ -147,6 +147,7 @@ export class HardhatNode extends EventEmitter {
       networkId,
       chainId,
       allowBlocksWithSameTimestamp,
+      confidential,
     } = config;
 
     let stateManager: StateManager;
@@ -273,6 +274,7 @@ export class HardhatNode extends EventEmitter {
       common,
       stateManager,
       blockchain,
+      confidential: confidential ?? true,
     });
 
     const instanceId = bufferToBigInt(randomBytes(32));
@@ -295,6 +297,7 @@ export class HardhatNode extends EventEmitter {
       hardforkActivations,
       mixHashGenerator,
       allowBlocksWithSameTimestamp,
+      config.confidential ?? true,
       tracingConfig,
       forkNetworkId,
       forkBlockNum,
@@ -381,6 +384,7 @@ Hardhat Network's forking functionality only works with blocks from at least spu
     private readonly _hardforkActivations: HardforkHistoryConfig,
     private _mixHashGenerator: RandomBufferGenerator,
     private _allowBlocksWithSameTimestamp: boolean,
+    public readonly confidential: boolean,
     tracingConfig?: TracingConfig,
     private _forkNetworkId?: number,
     private _forkBlockNumber?: bigint,
@@ -733,6 +737,14 @@ Hardhat Network's forking functionality only works with blocks from at least spu
     return this._txPool.getBlockGasLimit();
   }
 
+  public getPublicKey(): Uint8Array {
+    return this._vm.publicKey;
+  }
+
+  public getSecretKey(): Uint8Array {
+    return this._vm.secretKey;
+  }
+
   public async estimateGas(
     callParams: CallParams,
     blockNumberOrPending: bigint | "pending"
@@ -858,13 +870,17 @@ Hardhat Network's forking functionality only works with blocks from at least spu
     positionIndex: bigint,
     blockNumberOrPending: bigint | "pending"
   ): Promise<Buffer> {
+    const EXPECTED_DATA_SIZE = 32;
+    if (this.confidential) {
+      return Buffer.alloc(EXPECTED_DATA_SIZE, 0);
+    }
+
     const key = setLengthLeft(bigIntToBuffer(positionIndex), 32);
 
     const data = await this._runInBlockContext(blockNumberOrPending, () =>
       this._stateManager.getContractStorage(address, key)
     );
 
-    const EXPECTED_DATA_SIZE = 32;
     if (data.length < EXPECTED_DATA_SIZE) {
       return Buffer.concat(
         [Buffer.alloc(EXPECTED_DATA_SIZE - data.length, 0), data],
@@ -2538,8 +2554,8 @@ Hardhat Network's forking functionality only works with blocks from at least spu
 
   public async getClientVersion(): Promise<string> {
     const hardhatPackage = await getPackageJson();
-    const ethereumjsVMPackage = require("@nomicfoundation/ethereumjs-vm/package.json");
-    return `HardhatNetwork/${hardhatPackage.version}/@nomicfoundation/ethereumjs-vm/${ethereumjsVMPackage.version}`;
+    const ethereumjsVMPackage = require("@oasislabs/ethereumjs-vm/package.json");
+    return `HardhatNetwork/${hardhatPackage.version}/@oasislabs/ethereumjs-vm/${ethereumjsVMPackage.version}`;
   }
 
   public async getMetadata(): Promise<HardhatMetadata> {
