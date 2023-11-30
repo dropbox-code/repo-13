@@ -91,11 +91,11 @@ access_mem (unw_addr_space_t as, unw_word_t addr, unw_word_t *val, int write,
   if (write)
     {
       Debug (12, "mem[%x] <- %x\n", addr, *val);
-      *(unw_word_t *) addr = *val;
+      memcpy ((void *) addr, val, sizeof(unw_word_t));
     }
   else
     {
-      *val = *(unw_word_t *) addr;
+      memcpy (val, (void *) addr, sizeof(unw_word_t));
       Debug (12, "mem[%x] -> %x\n", addr, *val);
     }
   return 0;
@@ -117,12 +117,12 @@ access_reg (unw_addr_space_t as, unw_regnum_t reg, unw_word_t *val, int write,
 
   if (write)
     {
-      *(unw_word_t *) addr = *val;
+      memcpy ((void *) addr, val, sizeof(unw_word_t));
       Debug (12, "%s <- %x\n", unw_regname (reg), *val);
     }
   else
     {
-      *val = *(unw_word_t *) addr;
+      memcpy (val, (void *) addr, sizeof(unw_word_t));
       Debug (12, "%s -> %x\n", unw_regname (reg), *val);
     }
   return 0;
@@ -174,6 +174,14 @@ get_static_proc_name (unw_addr_space_t as, unw_word_t ip,
   return _Uelf32_get_proc_name (as, getpid (), ip, buf, buf_len, offp);
 }
 
+static int
+get_static_elf_filename (unw_addr_space_t as, unw_word_t ip,
+                         char *buf, size_t buf_len, unw_word_t *offp,
+                         void *arg)
+{
+  return _Uelf32_get_elf_filename (as, getpid (), ip, buf, buf_len, offp);
+}
+
 HIDDEN void
 hppa_local_addr_space_init (void)
 {
@@ -192,6 +200,7 @@ hppa_local_addr_space_init (void)
   local_addr_space.acc.access_fpreg = access_fpreg;
   local_addr_space.acc.resume = hppa_local_resume;
   local_addr_space.acc.get_proc_name = get_static_proc_name;
+  local_addr_space.acc.get_elf_filename = get_static_elf_filename;
   unw_flush_cache (&local_addr_space, 0, 0);
 }
 

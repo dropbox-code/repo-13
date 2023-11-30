@@ -51,6 +51,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.  */
 #include <libunwind.h>
 #include <pthread.h>
 #include <signal.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -161,6 +162,7 @@ target_is_big_endian(void)
 #pragma weak pthread_mutex_init
 #pragma weak pthread_mutex_lock
 #pragma weak pthread_mutex_unlock
+#pragma weak pthread_sigmask
 
 #define mutex_init(l)                                                   \
         (pthread_mutex_init != NULL ? pthread_mutex_init ((l), NULL) : 0)
@@ -188,8 +190,11 @@ static inline void mark_as_used(void *v UNUSED) {
 }
 
 #if defined(CONFIG_BLOCK_SIGNALS)
+/* SIGPROCMASK ignores return values, so we do not have to correct for pthread_sigmask() returning
+   errno on failure when sigprocmask() returns -1. */
 # define SIGPROCMASK(how, new_mask, old_mask) \
-  sigprocmask((how), (new_mask), (old_mask))
+    (pthread_sigmask != NULL ? pthread_sigmask((how), (new_mask), (old_mask)) \
+     : sigprocmask((how), (new_mask), (old_mask)))
 #else
 # define SIGPROCMASK(how, new_mask, old_mask) mark_as_used(old_mask)
 #endif
@@ -221,18 +226,20 @@ do {                                            \
 static ALWAYS_INLINE void *
 mi_mmap (void *addr, size_t len, int prot, int flags, int fd, off_t offset)
 {
-#ifdef SYS_mmap
-#if defined(__FreeBSD__) // prefer over syscall on *BSD
+#if defined(SYS_mmap) && !defined(__i386__)
+  /* Where supported, bypass libc and invoke the syscall directly. */
+# if defined(__FreeBSD__) // prefer over syscall on *BSD
   long int ret = __syscall (SYS_mmap, addr, len, prot, flags, fd, offset);
-#else
+# else
   long int ret = syscall (SYS_mmap, addr, len, prot, flags, fd, offset);
-#endif
+# endif
   // @todo this is very likely Linux specific
   if ((unsigned long int)ret > -4096UL)
     return MAP_FAILED;
   else
     return (void *)ret;
 #else
+  /* Where direct syscalls are not supported, forward to the libc call. */
   return mmap (addr, len, prot, flags, fd, offset);
 #endif
 }
@@ -294,6 +301,10 @@ extern int unwi_dyn_validate_cache (unw_addr_space_t as, void *arg);
 
 extern unw_dyn_info_list_t _U_dyn_info_list;
 extern pthread_mutex_t _U_dyn_info_list_lock;
+
+#define unw_address_is_valid UNWI_ARCH_OBJ(address_is_valid)
+HIDDEN bool unw_address_is_valid(unw_word_t, size_t);
+
 
 #if defined(UNW_DEBUG)
 # define unwi_debug_level                UNWI_ARCH_OBJ(debug_level)

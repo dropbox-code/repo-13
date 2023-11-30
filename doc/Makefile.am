@@ -3,6 +3,7 @@ man3_MANS = libunwind.man libunwind-dynamic.man libunwind-ia64.man	\
 	libunwind-coredump.man \
 	libunwind-ptrace.man \
 	libunwind-setjmp.man			\
+	libunwind-nto.man \
 	unw_apply_reg_state.man						\
 	unw_backtrace.man						\
 	unw_flush_cache.man						\
@@ -31,13 +32,16 @@ man3_MANS = libunwind.man libunwind-dynamic.man libunwind-ia64.man	\
 	unw_step.man							\
 	unw_strerror.man						\
 	_U_dyn_register.man						\
-	_U_dyn_cancel.man
+	_U_dyn_cancel.man         \
+	unw_get_elf_filename.man			\
+	unw_get_elf_filename_by_ip.man
 
 EXTRA_DIST = NOTES libunwind.trans					\
 	libunwind.tex libunwind-dynamic.tex libunwind-ia64.tex		\
 	libunwind-coredump.tex \
 	libunwind-ptrace.tex \
 	libunwind-setjmp.tex			\
+	libunwind-nto.tex \
 	unw_apply_reg_state.tex						\
 	unw_backtrace.tex						\
 	unw_flush_cache.tex						\
@@ -64,6 +68,8 @@ EXTRA_DIST = NOTES libunwind.trans					\
 	unw_strerror.tex						\
 	_U_dyn_register.tex						\
 	_U_dyn_cancel.tex						\
+	unw_get_elf_filename.tex		\
+	unw_get_elf_filename_by_ip.tex	\
 	$(man3_MANS)
 
 L2M	= latex2man

@@ -120,7 +120,7 @@ load_debug_frame (const char *file, char **buf, size_t *bufsize, int is_local,
   ei.image = NULL;
   *load_offset = 0;
 
-  ret = elf_w (load_debuglink) (file, &ei, is_local);
+  ret = elf_w (load_debuginfo) (file, &ei, is_local);
   if (ret != 0)
     return ret;
 
@@ -966,7 +966,7 @@ dwarf_search_unwind_table (unw_addr_space_t as, unw_word_t ip,
   if (as == unw_local_addr_space)
     {
       e = lookup (table, table_len, ip - ip_base - di->load_offset);
-      if (e && &e[1] < &table[table_len / sizeof (unw_word_t)])
+      if (e && &e[1] < &table[table_len / sizeof (struct table_entry)])
 	last_ip = e[1].start_ip_offset + ip_base + di->load_offset;
       else
 	last_ip = di->end_ip;
@@ -1037,7 +1037,7 @@ dwarf_search_unwind_table (unw_addr_space_t as, unw_word_t ip,
 }
 
 HIDDEN void
-dwarf_put_unwind_info (unw_addr_space_t as, unw_proc_info_t *pi, void *arg)
+dwarf_put_unwind_info (unw_addr_space_t as UNUSED, unw_proc_info_t *pi UNUSED, void *arg UNUSED)
 {
   return;       /* always a nop */
 }

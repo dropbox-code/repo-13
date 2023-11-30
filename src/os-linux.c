@@ -39,7 +39,7 @@ tdep_get_elf_image (struct elf_image *ei, pid_t pid, unw_word_t ip,
                     char *path, size_t pathlen)
 {
   struct map_iterator mi;
-  int found = 0, rc;
+  int found = 0, rc = UNW_ESUCCESS;
   unsigned long hi;
   char root[sizeof ("/proc/0123456789/root")], *cp;
   char *full_path;
@@ -61,6 +61,18 @@ tdep_get_elf_image (struct elf_image *ei, pid_t pid, unw_word_t ip,
       return -1;
     }
 
+  // get path only, no need to map elf image
+  if (!ei && path)
+    {
+      strncpy(path, mi.path, pathlen);
+      path[pathlen - 1] = '\0';
+      if (strlen(mi.path) >= pathlen)
+        rc = -UNW_ENOMEM;
+
+      maps_close (&mi);
+      return rc;
+    }
+
   full_path = mi.path;
 
   /* Get process root */
@@ -79,10 +91,16 @@ tdep_get_elf_image (struct elf_image *ei, pid_t pid, unw_word_t ip,
   if(!path)
     full_path = (char*) malloc (_len);
   else if(_len >= pathlen) // passed buffer is too small, fail
-    return -1;
+    {
+      maps_close (&mi);
+      return -1;
+    }
 
   strcpy (full_path, root);
   strcat (full_path, mi.path);
+
+  if (stat(full_path, &st) || !S_ISREG(st.st_mode))
+    strcpy(full_path, mi.path);
 
   rc = elf_map_image (ei, full_path);
 

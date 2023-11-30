@@ -406,7 +406,7 @@ tdep_trace (unw_cursor_t *cursor, void **buffer, int *size)
   int ret;
   int validate UNUSED = 0;
 
-  /* Check input parametres. */
+  /* Check input parameters. */
   if (unlikely(! cursor || ! buffer || ! size || (maxdepth = *size) <= 0))
     return -UNW_EINVAL;
 
@@ -477,6 +477,7 @@ tdep_trace (unw_cursor_t *cursor, void **buffer, int *size)
       /* Fall thru to standard processing after forcing validation. */
       if (d->as == unw_local_addr_space)
         dwarf_set_validate(d, 1);
+      FALLTHROUGH;
 
     case UNW_X86_64_FRAME_STANDARD:
       /* Advance standard traceable frame. */

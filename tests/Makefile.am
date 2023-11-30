@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/include/tdep-$(arch) -I$(top_srcdir)/src
 AM_CFLAGS = -fno-optimize-sibling-calls
 
 LOG_DRIVER = $(SHELL) $(UNW_TESTDRIVER)
@@ -21,6 +21,8 @@ check_SCRIPTS_arch =
 check_SCRIPTS_cdep =
 check_SCRIPTS_common =	run-check-namespace
 
+XFAIL_TESTS =
+
 if REMOTE_ONLY
 
 perf:
@@ -40,6 +42,7 @@ if ARCH_PPC64
 if USE_ALTIVEC
  noinst_PROGRAMS_arch += ppc64-test-altivec
 endif #USE_ALTIVEC
+ check_PROGRAMS_arch += ppc64-test-plt
 else  #!ARCH_PPC64
 if ARCH_X86_64
  check_PROGRAMS_arch +=	Gx64-test-dwarf-expressions Lx64-test-dwarf-expressions x64-unwind-badjmp-signal-frame
@@ -48,14 +51,13 @@ endif #!ARCH_PPC64
 endif #!ARCH_IA64
 
 if ARCH_AARCH64
-  check_PROGRAMS_arch += Garm64-test-sve-signal Larm64-test-sve-signal
+  check_PROGRAMS_arch += Garm64-test-sve-signal Larm64-test-sve-signal   \
+                         aarch64-test-plt aarch64-test-frame-record
 endif
 
- check_PROGRAMS_cdep +=	Gtest-bt Ltest-bt Gtest-exc Ltest-exc		 \
+ check_PROGRAMS_cdep +=	Gtest-bt Ltest-bt \
 			Gtest-init Ltest-init				 \
 			Gtest-concurrent Ltest-concurrent		 \
-			Gtest-resume-sig Ltest-resume-sig		 \
-			Gtest-resume-sig-rt Ltest-resume-sig-rt		 \
 			Gtest-trace Ltest-trace				 \
 			Ltest-mem-validate				 \
 			test-async-sig test-flush-cache test-init-remote \
@@ -69,10 +71,20 @@ if !ARCH_IA64
  check_PROGRAMS_cdep += Ltest-init-local-signal
 endif
 
+# Tests that exercise unw_resume, which is only unsupported on some targets
+if ENABLE_UNW_RESUME_TESTS
+check_PROGRAMS_cdep += Gtest-exc Ltest-exc \
+                       Gtest-resume-sig Ltest-resume-sig \
+                       Gtest-resume-sig-rt Ltest-resume-sig-rt
+endif
+
 if BUILD_PTRACE
  check_SCRIPTS_cdep += run-ptrace-mapper run-ptrace-misc
  check_PROGRAMS_cdep += test-ptrace
  noinst_PROGRAMS_cdep += mapper test-ptrace-misc
+if ARCH_X86
+ XFAIL_TESTS += test-ptrace
+endif
 endif
 
 if BUILD_SETJMP
@@ -81,6 +93,10 @@ endif
 
 if SUPPORT_CXX_EXCEPTIONS
  check_PROGRAMS_cdep += Ltest-cxx-exceptions
+endif
+# Temporarily XFAIL this test for riscv64 until #519 is fixed
+if ARCH_RISCV
+  XFAIL_TESTS += Ltest-cxx-exceptions
 endif
 
 if OS_LINUX
@@ -115,7 +131,6 @@ TESTS = $(check_PROGRAMS)
 if !CROSS_BUILD
  TESTS += $(check_SCRIPTS)
 endif
-XFAIL_TESTS =
 
 if ARCH_IA64
  check_PROGRAMS_cdep += Gtest-dyn1 Ltest-dyn1
@@ -151,6 +166,7 @@ endif
 
 noinst_PROGRAMS = $(noinst_PROGRAMS_common) $(noinst_PROGRAMS_cdep) \
 	$(noinst_PROGRAMS_arch)
+noinst_HEADERS = ident.h
 
 Lia64_test_readonly_SOURCES = Lia64-test-readonly.c ia64-test-readonly-asm.S
 Gia64_test_readonly_SOURCES = Gia64-test-readonly.c ia64-test-readonly-asm.S
@@ -165,6 +181,7 @@ Gia64_test_nat_SOURCES = Gia64-test-nat.c ia64-test-nat-asm.S
 ia64_test_dyn1_SOURCES = ia64-test-dyn1.c ia64-dyn-asm.S flush-cache.S \
 				flush-cache.h
 ppc64_test_altivec_SOURCES = ppc64-test-altivec.c  ppc64-test-altivec-utils.c
+ppc64_test_plt_SOURCES = ppc64-test-plt.c
 
 
 Gx64_test_dwarf_expressions_SOURCES =  Gx64-test-dwarf-expressions.c \
@@ -174,11 +191,14 @@ Lx64_test_dwarf_expressions_SOURCES =  Lx64-test-dwarf-expressions.c \
 
 Garm64_test_sve_signal_SOURCES = Garm64-test-sve-signal.c
 Larm64_test_sve_signal_SOURCES = Larm64-test-sve-signal.c
+aarch64_test_plt_SOURCES = aarch64-test-plt.c
+aarch64_test_frame_record_SOURCES = aarch64-test-frame-record.c
 
 if COMPILER_SUPPORTS_MARCH_ARMV8_A_SVE
  Garm64_test_sve_signal_CFLAGS = -fno-inline -march=armv8-a+sve
  Larm64_test_sve_signal_CFLAGS = -fno-inline -march=armv8-a+sve
 endif
+XFAIL_TESTS += Garm64-test-sve-signal Larm64-test-sve-signal
 
 Gtest_init_SOURCES = Gtest-init.cxx
 Ltest_init_SOURCES = Ltest-init.cxx
@@ -218,7 +238,7 @@ endif
 LIBUNWIND_setjmp = $(top_builddir)/src/libunwind-setjmp.la	\
 		   $(LIBUNWIND_ELF) $(LIBUNWIND)
 
-test_async_sig_LDADD = $(LIBUNWIND_local) -lpthread
+test_async_sig_LDADD = $(LIBUNWIND_local) $(PTHREADS_LIB)
 test_flush_cache_LDADD = $(LIBUNWIND_local)
 test_init_remote_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
 test_mem_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
@@ -227,16 +247,16 @@ test_ptrace_LDADD = $(LIBUNWIND_ptrace) $(LIBUNWIND)
 test_proc_info_LDADD = $(LIBUNWIND)
 test_static_link_LDADD = $(LIBUNWIND)
 test_strerror_LDADD = $(LIBUNWIND)
-Lrs_race_LDADD = $(LIBUNWIND_local) -lpthread
+Lrs_race_LDADD = $(LIBUNWIND_local) $(PTHREADS_LIB)
 Ltest_varargs_LDADD = $(LIBUNWIND_local)
 Ltest_init_local_signal_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
 
 Gtest_bt_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
-Gtest_concurrent_LDADD = $(LIBUNWIND) $(LIBUNWIND_local) -lpthread
+Gtest_concurrent_LDADD = $(LIBUNWIND) $(LIBUNWIND_local) $(PTHREADS_LIB)
 x64_unwind_badjmp_signal_frame_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
 Gtest_dyn1_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
 Gtest_exc_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
-Gtest_init_LDADD = $(LIBUNWIND) $(LIBUNWIND_local) @BACKTRACELIB@
+Gtest_init_LDADD = $(LIBUNWIND) $(LIBUNWIND_local) $(BACKTRACELIB)
 Gtest_resume_sig_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
 Gtest_resume_sig_rt_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
 Gperf_simple_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
@@ -244,13 +264,13 @@ Gtest_trace_LDADD=$(LIBUNWIND) $(LIBUNWIND_local)
 Gperf_trace_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
 
 Ltest_bt_LDADD = $(LIBUNWIND_local)
-Ltest_concurrent_LDADD = $(LIBUNWIND_local) -lpthread
+Ltest_concurrent_LDADD = $(LIBUNWIND_local) $(PTHREADS_LIB)
 Ltest_cxx_exceptions_LDADD = $(LIBUNWIND_local)
 Ltest_dyn1_LDADD = $(LIBUNWIND_local)
 Ltest_exc_LDADD = $(LIBUNWIND_local)
 Ltest_init_LDADD = $(LIBUNWIND_local)
-Ltest_nomalloc_LDADD = $(LIBUNWIND_local) @DLLIB@
-Ltest_nocalloc_LDADD = $(LIBUNWIND_local) @DLLIB@ -lpthread
+Ltest_nomalloc_LDADD = $(LIBUNWIND_local) $(DLLIB)
+Ltest_nocalloc_LDADD = $(LIBUNWIND_local) $(DLLIB) $(PTHREADS_LIB)
 Ltest_resume_sig_LDADD = $(LIBUNWIND_local)
 Ltest_resume_sig_rt_LDADD = $(LIBUNWIND_local)
 Lperf_simple_LDADD = $(LIBUNWIND_local)
@@ -262,7 +282,7 @@ test_setjmp_LDADD = $(LIBUNWIND_setjmp)
 ia64_test_setjmp_LDADD = $(LIBUNWIND_setjmp)
 
 if BUILD_COREDUMP
-test_coredump_unwind_LDADD = $(LIBUNWIND_coredump) $(LIBUNWIND) @BACKTRACELIB@
+test_coredump_unwind_LDADD = $(LIBUNWIND_coredump) $(LIBUNWIND) $(BACKTRACELIB)
 endif
 
 Gia64_test_nat_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
@@ -276,9 +296,12 @@ Lia64_test_readonly_LDADD = $(LIBUNWIND_local)
 ia64_test_dyn1_LDADD = $(LIBUNWIND)
 ia64_test_sig_LDADD = $(LIBUNWIND)
 ppc64_test_altivec_LDADD = $(LIBUNWIND)
+ppc64_test_plt_LDADD = $(LIBUNWIND)
 
 Gx64_test_dwarf_expressions_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
 Lx64_test_dwarf_expressions_LDADD = $(LIBUNWIND_local)
 
 Garm64_test_sve_signal_LDADD = $(LIBUNWIND) $(LIBUNWIND_local)
 Larm64_test_sve_signal_LDADD = $(LIBUNWIND_local)
+aarch64_test_plt_LDADD = $(LIBUNWIND)
+aarch64_test_frame_record_LDADD = $(LIBUNWIND)
