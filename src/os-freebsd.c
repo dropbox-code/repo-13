@@ -141,7 +141,7 @@ tdep_get_elf_image (struct elf_image *ei, pid_t pid, unw_word_t ip,
      if (ei)
        ret = elf_map_image (ei, kv->kve_path);
      else
-       ret = strlen (kv->kve_path) >= pathlen ? -UNW_ENOMEM : UNW_ESUCCESS:;
+       ret = strlen (kv->kve_path) >= pathlen ? -UNW_ENOMEM : UNW_ESUCCESS;
      break;
   }
   free_mem(buf, len1);
@@ -164,7 +164,7 @@ tdep_get_exe_image_path (char *path)
 
   error = sysctl(mib, 4, path, &len, NULL, 0);
   if (error == -1)
-	  path[0] = 0;
+    path[0] = 0;
 }
 
 #endif

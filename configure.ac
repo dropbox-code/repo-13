@@ -1,11 +1,35 @@
-dnl Process this file with autoconf to produce a configure script.
+#
+# configure.ac
+#
+# Process this file with autoconf to produce a configure script.
+AC_COPYRIGHT([
+ This file is part of libunwind.
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+])
+
 
 define(pkg_major, 1)
-define(pkg_minor, 8)
+define(pkg_minor, 9)
 define(pkg_extra, -pre)
 define(pkg_maintainer, https://github.com/libunwind/libunwind)
 define(mkvers, $1.$2$3)
-
 AC_INIT([libunwind],[mkvers(pkg_major, pkg_minor, pkg_extra)],[pkg_maintainer])
 AC_CONFIG_SRCDIR(src/mi/backtrace.c)
 AC_CONFIG_AUX_DIR(config)
@@ -54,7 +78,7 @@ dnl Checks for libraries.
 AC_MSG_NOTICE([--- Checking for libraries ---])
 save_LDFLAGS="$LDFLAGS"
 save_LIBS="$LIBS"
-LDFLAGS+=" -nostdlib"
+LDFLAGS="${LDFLAGS} -nostdlib"
 AC_SEARCH_LIBS([_Unwind_Resume], [gcc_s gcc],
                [AS_IF([test "$ac_cv_search__Unwind_Resume" != "none required"],
                       [AC_SUBST([LIBCRTS], ["$ac_cv_search__Unwind_Resume"])])],
@@ -64,6 +88,7 @@ AC_SEARCH_LIBS([_Unwind_Resume], [gcc_s gcc],
 LIBS="$save_LIBS"
 LDFLAGS="$save_LDFLAGS"
 AC_SEARCH_LIBS([__uc_get_grs], [uca])
+AC_SEARCH_LIBS([getcontext], [ucontext])
 
 dnl Checks for library functions.
 AC_CHECK_FUNCS(dl_iterate_phdr dl_phdr_removals_counter dlmodinfo getunwind \
@@ -247,7 +272,8 @@ AM_COND_IF([CONFIG_TESTS], [
                  [AS_IF([test "$ac_cv_search_backtrace" != "none required"],
                         [AC_SUBST([BACKTRACELIB],["$ac_cv_search_backtrace"])])])
   LIBS="$old_LIBS"
-  AC_CONFIG_FILES(tests/Makefile tests/check-namespace.sh)
+  AC_CONFIG_FILES([tests/Makefile])
+  AC_CONFIG_FILES([tests/check-namespace.sh], [chmod +x tests/check-namespace.sh])
 ])
 AC_ARG_WITH([testdriver],
             [AS_HELP_STRING([--with-testdriver],
