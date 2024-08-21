@@ -21,9 +21,15 @@
 #
 
 # Set the DSO versions
-SOVERSION=9:0:1		# See comments at end of file.
+SOVERSION=10:0:2		# See comments at end of file.
 SETJMP_SO_VERSION=0:0:0
 COREDUMP_SO_VERSION=0:0:0
+
+AM_CPPFLAGS = $(UNW_DEBUG_CPPFLAGS) \
+              $(UNW_REMOTE_CPPFLAGS) \
+              $(UNW_TARGET_CPPFLAGS) \
+              -I$(top_srcdir)/include -I$(top_srcdir)/include/tdep-$(arch) -I.
+AM_CFLAGS = $(UNW_EXTRA_CFLAGS)
 
 #
 # Don't link with start-files since we don't use any constructors/destructors:
@@ -238,6 +244,7 @@ libunwind_la_SOURCES_generic =                 \
 	mi/Gget_proc_info_by_ip.c              \
 	mi/Gget_proc_name.c                    \
 	mi/Gget_reg.c                          \
+	mi/Gis_plt_entry.c                     \
 	mi/Gput_dynamic_unwind_info.c          \
 	mi/Gset_cache_size.c                   \
 	mi/Gset_caching_policy.c               \
@@ -289,6 +296,7 @@ libunwind_la_SOURCES_local_nounwind =          \
 	mi/Lget_proc_info_by_ip.c              \
 	mi/Lget_proc_name.c                    \
 	mi/Lget_reg.c                          \
+	mi/Lis_plt_entry.c                     \
 	mi/Lput_dynamic_unwind_info.c          \
 	mi/Lset_cache_size.c                   \
 	mi/Lset_caching_policy.c               \
@@ -1243,13 +1251,47 @@ libunwind_la_LDFLAGS =	$(COMMON_SO_LDFLAGS) -XCClinker -nostdlib \
 libunwind_la_LIBADD  += -lc $(LIBCRTS)
 libunwind_la_LIBADD += $(LIBLZMA) $(LIBZ)
 
-AM_CPPFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/include/tdep-$(arch) -I.
-AM_CCASFLAGS = $(AM_CPPFLAGS)
 noinst_HEADERS += unwind/unwind-internal.h
 
-EXTRA_DIST = $(libunwind_la_EXTRAS_ia64)
+EXTRA_DIST = $(libunwind_la_EXTRAS_ia64) abi
 
 MAINTAINERCLEANFILES = Makefile.in
+
+#
+# ABI checks
+#
+# Running the ABI checks require configuring with CFLAGS="-g -Og".
+# The result is output in a file with the `.abidiff` extension which is also
+# printed to stdout if there is an ABI mismatch detected.
+#
+# This also requires libabigail tools of at least version 2.0 to be installed.
+#
+.la.abi:
+	$(AM_V_GEN)soname=$$(sed -n -e "s#dlname='\(.*\)\.[0-9]*'#\1#p" $<); \
+	if test -n "$$soname"; then \
+		$(ABICHECK) .libs/$${soname} \
+		            --no-show-locs \
+		            --no-comp-dir-path \
+		            --no-corpus-path \
+		            --drop-undefined-syms \
+		            --drop-private-types \
+		            --out-file $@; \
+	else \
+		printf "(no SONAME found in %s)\n" "$<"; \
+	fi
+
+abi_srcdir = "$(top_srcdir)/src/abi"
+abi_targetdir = "$(abi_srcdir)/$(arch)/$(target_os)"
+.abi.abidiff:
+	$(AM_V_GEN)if test -f "$<"; then \
+		$(ABIDIFF) --suppressions "$(abi_srcdir)/libunwind.supp" \
+		           -l "$(abi_targetdir)/$<" "$<" >$@ \
+			|| cat $@; \
+	fi
+
+abi-check: $(lib_LTLIBRARIES:.la=.abidiff) 
+
+.PHONY: abi-check
 
 # The -version-info flag accepts an argument of the form
 # `current[:revision[:age]]'. So, passing `-version-info 3:12:1' sets

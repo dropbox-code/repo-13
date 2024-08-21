@@ -63,7 +63,12 @@ AC_CHECK_HEADERS(asm/ptrace_offsets.h asm/ptrace.h asm/vsyscall.h endian.h sys/e
 		sys/types.h sys/procfs.h sys/ptrace.h sys/syscall.h byteswap.h elf.h \
 		sys/elf.h link.h sys/link.h)
 
-CPPFLAGS="${CPPFLAGS} -D_GNU_SOURCE"
+dnl Set target-specific compile flags
+AS_CASE([$target_os],
+        [*-gnu|*-gnueabi*], [UNW_TARGET_CPPFLAGS="-D_GNU_SOURCE"],
+        [solaris*],         [UNW_TARGET_CPPFLAGS="-D__EXTENSIONS__"]
+)
+AC_SUBST([UNW_TARGET_CPPFLAGS])
 
 AC_MSG_NOTICE([--- Checking for available types ---])
 AC_CHECK_MEMBERS([struct dl_phdr_info.dlpi_subs],,,[#include <link.h>])
@@ -287,17 +292,14 @@ AC_MSG_CHECKING([if debug support should be built])
 AC_ARG_ENABLE([debug],
               [AS_HELP_STRING([--enable-debug],
                               [enable debug support (slows down execution)
+                              CAUTION: changes the ABI
                                @<:@default=no@:>@])],
-              [],
+              [AC_SUBST([UNW_DEBUG_CPPFLAGS], ["-DUNW_DEBUG=1"])],
               [enable_debug=no]
 )
 AC_MSG_RESULT([$enable_debug])
-AS_IF([test x$enable_debug = xyes],
-      [CPPFLAGS="${CPPFLAGS} -DDEBUG"],
-      [CPPFLAGS="${CPPFLAGS} -DNDEBUG"]
-)
 
-AC_MSG_CHECKING([if C++ exception support should be built])
+AC_MSG_CHECKING([if C++ exception support shouldm  be built])
 AC_ARG_ENABLE([cxx_exceptions],
               [AS_HELP_STRING([--enable-cxx-exceptions],
                               [use libunwind to handle C++ exceptions
@@ -388,12 +390,12 @@ AM_CONDITIONAL(USE_DWARF, [test x$use_dwarf = xyes])
 AC_MSG_RESULT([$use_dwarf])
 
 AC_MSG_CHECKING([whether to restrict build to remote support])
-if test x$target_arch != x$host_arch; then
-  CPPFLAGS="${CPPFLAGS} -DUNW_REMOTE_ONLY"
+AM_COND_IF([REMOTE_ONLY],[
+  AC_SUBST([UNW_REMOTE_CPPFLAGS], [-DUNW_REMOTE_ONLY])
   remote_only=yes
-else
+],[
   remote_only=no
-fi
+])
 AC_MSG_RESULT([$remote_only])
 
 AC_MSG_CHECKING([whether to load .debug_frame sections])
@@ -474,21 +476,17 @@ AC_SUBST([LIBZ])
 AM_CONDITIONAL(HAVE_ZLIB, test x$enable_zlibdebuginfo = xyes)
 
 AC_MSG_CHECKING([for Intel compiler])
-AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[]], [[#ifndef __INTEL_COMPILER
-#error choke me
-#endif]])],[intel_compiler=yes],[intel_compiler=no])
-
-if test x$GCC = xyes -a x$intel_compiler != xyes; then
-  CFLAGS="${CFLAGS} -fexceptions -Wall -Wsign-compare"
-fi
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
+        [],
+        [#ifndef __INTEL_COMPILER
+         #error choke me
+         #endif
+        ])],
+    [intel_compiler=yes],
+    [intel_compiler=no])
 AC_MSG_RESULT([$intel_compiler])
-
-AC_MSG_CHECKING([if building on Solaris then define __EXTENSIONS__ macro])
-if $OS_SOLARIS; then
-  CFLAGS="${CFLAGS} -D__EXTENSIONS__"
-  AC_MSG_RESULT([yes])
-else
-  AC_MSG_RESULT([no])
+if test x$GCC = xyes -a x$intel_compiler != xyes; then
+    AC_SUBST([UNW_EXTRA_CFLAGS],["-fexceptions -Wall -Wsign-compare"])
 fi
 
 AC_MSG_CHECKING([for QCC compiler])
@@ -543,7 +541,19 @@ if test x$have__builtin_unreachable = xyes; then
 fi
 AC_MSG_RESULT([$have__builtin_unreachable])
 
-CCASFLAGS="${CCASFLAGS} ${CPPFLAGS}"
+AC_CHECK_TOOL([ABICHECK], [abidw])
+AS_IF([test "$ABICHECK" = ":"],, [
+    abicheck_version=$($ABICHECK --version | sed -n 's/[[^ ]]* \([[0-9]]\).*/\1/p')
+    AC_MSG_WARN([$ABICHECK version $abicheck_version])
+    AS_IF([test $abicheck_version -ge 2],
+          [ABIDIFF=abidiff],
+          [AC_MSG_WARN([$ABICHECK is version $abicheck_version, need at least 2.0])
+           ABICHECK=":"
+           ABIDIFF=":"]
+    )
+])
+AC_SUBST(ABICHECK)
+AC_SUBST(ABIDIFF)
 
 arch="$target_arch"
 ARCH=`echo $target_arch | tr [a-z] [A-Z]`

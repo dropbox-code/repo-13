@@ -290,6 +290,16 @@ trace_lookup (unw_cursor_t *cursor,
   uint64_t slot = ((pc * 0x9e3779b97f4a7c16) >> 43) & (cache_size-1);
   unw_tdep_frame_t *frame;
 
+#if defined(__QNXNTO__)
+  /**
+   * Without slow DWARF unwinding the signal context gets lost, so bail.
+   */
+  if (unw_is_signal_frame (cursor))
+    {
+      return NULL;
+    }
+#endif
+
   for (i = 0; i < 16; ++i)
   {
     frame = &cache->frames[slot];
@@ -495,6 +505,8 @@ tdep_trace (unw_cursor_t *cursor, void **buffer, int *size)
       else
         {
           /* Cached frame has no LR and neither do we. */
+          Debug (1, "returning -UNW_ESTOPUNWIND, depth %d\n", depth);
+          *size = depth;
           return -UNW_ESTOPUNWIND;
         }
       if (likely(ret >= 0) && likely(f->fp_cfa_offset != -1))
@@ -532,8 +544,9 @@ tdep_trace (unw_cursor_t *cursor, void **buffer, int *size)
       /* We cannot trace through this frame, give up and tell the
           caller we had to stop.  Data collected so far may still be
           useful to the caller, so let it know how far we got.  */
-      ret = -UNW_ESTOPUNWIND;
-      break;
+      Debug (1, "returning -UNW_ESTOPUNWIND, depth %d\n", depth);
+      *size = depth;
+      return -UNW_ESTOPUNWIND;
     }
 
     Debug (4, "new cfa 0x%lx pc 0x%lx sp 0x%lx fp 0x%lx\n",
@@ -547,9 +560,7 @@ tdep_trace (unw_cursor_t *cursor, void **buffer, int *size)
     buffer[depth++] = (void *) (pc - d->use_prev_instr);
   }
 
-#if UNW_DEBUG
   Debug (1, "returning %d, depth %d\n", ret, depth);
-#endif
   *size = depth;
   return ret;
 }
