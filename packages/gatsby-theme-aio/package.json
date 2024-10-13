@@ -68,13 +68,13 @@
     "gatsby": "^4.22.0",
     "gatsby-cli": "^4.23.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react-dom": "^18.3.1",
     "storybook-er-diagram": "^0.1.7"
   },
   "peerDependencies": {
     "gatsby": "^4.22.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^18.3.1"
   },
   "dependencies": {
     "@adobe/focus-ring-polyfill": "^0.1.5",
