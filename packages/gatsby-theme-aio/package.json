@@ -128,7 +128,7 @@
     "gatsby-plugin-react-helmet": "^5.23.0",
     "gatsby-plugin-sharp": "^4.23.0",
     "gatsby-remark-autolink-headers": "^5.23.0",
-    "gatsby-remark-copy-linked-files": "^5.23.0",
+    "gatsby-remark-copy-linked-files": "^6.13.2",
     "gatsby-remark-images-remote": "^2.1.1",
     "gatsby-remark-mermaid": "^2.1.0",
     "gatsby-source-filesystem": "^4.23.0",
