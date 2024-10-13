@@ -99,7 +99,7 @@ __metadata:
     gatsby-plugin-layout: ^3.23.0
     gatsby-plugin-mdx: ^3.20.0
     gatsby-plugin-mdx-embed: ^1.0.0
-    gatsby-plugin-preact: ^6.23.0
+    gatsby-plugin-preact: ^7.13.1
     gatsby-plugin-react-helmet: ^5.23.0
     gatsby-plugin-sharp: ^4.23.0
     gatsby-remark-autolink-headers: ^5.23.0
@@ -1869,6 +1869,15 @@ __metadata:
   dependencies:
     regenerator-runtime: ^0.13.4
   checksum: 66b7e3c13e9ee1d2c9397ea89144f29a875edee266a0eb2d9971be51b32fdbafc85808c7a45e011e6681899bb804b4e2ee2aed6dc07108dbbd6b11b6cc2afba6
+  languageName: node
+  linkType: hard
+
+"@babel/runtime@npm:^7.20.13":
+  version: 7.25.7
+  resolution: "@babel/runtime@npm:7.25.7"
+  dependencies:
+    regenerator-runtime: ^0.14.0
+  checksum: 1d6133ed1cf1de1533cfe84a4a8f94525271a0d93f6af4f2cdae14884ec3c8a7148664ddf7fd2a14f82cc4485904a1761821a55875ad241c8b4034e95e7134b2
   languageName: node
   linkType: hard
 
@@ -15942,19 +15951,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gatsby-plugin-preact@npm:^6.23.0":
-  version: 6.24.0
-  resolution: "gatsby-plugin-preact@npm:6.24.0"
+"gatsby-plugin-preact@npm:^7.13.1":
+  version: 7.13.1
+  resolution: "gatsby-plugin-preact@npm:7.13.1"
   dependencies:
-    "@babel/runtime": ^7.15.4
+    "@babel/runtime": ^7.20.13
     "@gatsbyjs/webpack-hot-middleware": ^2.25.3
     "@prefresh/babel-plugin": ^0.4.3
     "@prefresh/webpack": ^3.3.4
   peerDependencies:
-    gatsby: ^4.0.0-next
+    gatsby: ^5.0.0-next
     preact: ^10.3.4
     preact-render-to-string: ^5.1.8
-  checksum: 3c050fdced9441b24febf4f9601f8f3f2a99a2f7ed7f264ade44a72d3bef5348e95751f86fdf4ff72dd1d47e6db91104582cf94a5d86064aa04f32acbcfaedd6
+  checksum: d85a1474b57ce732623b221f231a85cb65e0d9dd5d4b004e95593c8d21d6b1fbfb02be663d57bafc5ac98dc6c907979adbcc9e09a35290736c845dca2a857a11
   languageName: node
   linkType: hard
 
@@ -26026,6 +26035,13 @@ __metadata:
   version: 0.13.10
   resolution: "regenerator-runtime@npm:0.13.10"
   checksum: 09893f5a9e82932642d9a999716b6c626dc53ef2a01307c952ebbf8e011802360163a37c304c18a6c358548be5a72b448e37209954a18696f21e438c81cbb4b9
+  languageName: node
+  linkType: hard
+
+"regenerator-runtime@npm:^0.14.0":
+  version: 0.14.1
+  resolution: "regenerator-runtime@npm:0.14.1"
+  checksum: 9f57c93277b5585d3c83b0cf76be47b473ae8c6d9142a46ce8b0291a04bb2cf902059f0f8445dcabb3fb7378e5fe4bb4ea1e008876343d42e46d3b484534ce38
   languageName: node
   linkType: hard
 
