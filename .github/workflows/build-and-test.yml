@@ -251,7 +251,7 @@ jobs:
       uses: actions/checkout@v2
     - continue-on-error: true
       name: Setup Go
-      uses: actions/setup-go@v2.1.5
+      uses: actions/setup-go@v5.0.2
       with:
         go-version: 1.17
     - continue-on-error: true
@@ -565,7 +565,7 @@ jobs:
       uses: actions/checkout@v2
     - continue-on-error: true
       name: Setup Go
-      uses: actions/setup-go@v2.1.5
+      uses: actions/setup-go@v5.0.2
       with:
         go-version: 1.17
     - continue-on-error: true
@@ -851,7 +851,7 @@ jobs:
       uses: actions/checkout@v2
     - continue-on-error: true
       name: Setup Go
-      uses: actions/setup-go@v2.1.5
+      uses: actions/setup-go@v5.0.2
       with:
         go-version: 1.17
     - continue-on-error: true
@@ -1145,7 +1145,7 @@ jobs:
       uses: actions/checkout@v2
     - continue-on-error: true
       name: Setup Go
-      uses: actions/setup-go@v2.1.5
+      uses: actions/setup-go@v5.0.2
       with:
         go-version: 1.17
     - continue-on-error: true
