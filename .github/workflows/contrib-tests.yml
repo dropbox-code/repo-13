@@ -249,7 +249,7 @@ jobs:
       run: sudo chmod -R 777 $GITHUB_WORKSPACE /github /__w/_temp
     - continue-on-error: true
       name: Checkout Repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - continue-on-error: true
       name: Run Contrib Tests
       run: 'contrib_path=/tmp/opentelemetry-collector-contrib
