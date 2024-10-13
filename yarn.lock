@@ -65,7 +65,7 @@ __metadata:
     "@spectrum-css/popover": 5.0.18
     "@spectrum-css/progresscircle": 1.0.23
     "@spectrum-css/search": 4.2.12
-    "@spectrum-css/sidenav": 3.0.24
+    "@spectrum-css/sidenav": 5.1.3
     "@spectrum-css/table": 4.0.19
     "@spectrum-css/tabs": 3.2.19
     "@spectrum-css/textfield": 3.2.4
@@ -5813,12 +5813,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@spectrum-css/sidenav@npm:3.0.24":
-  version: 3.0.24
-  resolution: "@spectrum-css/sidenav@npm:3.0.24"
+"@spectrum-css/sidenav@npm:5.1.3":
+  version: 5.1.3
+  resolution: "@spectrum-css/sidenav@npm:5.1.3"
   peerDependencies:
-    "@spectrum-css/vars": ^8.0.0
-  checksum: a3932f6ab74c24ee0a2150a5b2bf41be0b35e27700f1926e31848f17723c3600b8cdafb91bb5acc6407e0f2406260784f881a6e5f464d9b778aa41007d49024e
+    "@spectrum-css/icon": ">=7"
+    "@spectrum-css/tokens": ">=14"
+  peerDependenciesMeta:
+    "@spectrum-css/icon":
+      optional: true
+  checksum: 913eb41af48ade954dd1c2336b3d43c689373ef125a043fdde5be1e30c138987ab4eea136f11e91248f915bf785e44e12011c8253ff8a3e0e6750ffc0b565dbe
   languageName: node
   linkType: hard
 
