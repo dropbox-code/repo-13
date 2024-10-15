@@ -246,7 +246,7 @@ jobs:
 
         sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
     - continue-on-error: true
-      uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - continue-on-error: true
       env:
         QEMU_SRC: http://archive.ubuntu.com/ubuntu/pool/universe/q/qemu
@@ -605,7 +605,7 @@ jobs:
 
         sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
     - continue-on-error: true
-      uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - continue-on-error: true
       if: ${{ matrix.target.arch }} = 'i686'
       name: Setup
@@ -930,7 +930,7 @@ jobs:
 
         sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
     - continue-on-error: true
-      uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - continue-on-error: true
       name: Set up Alpine Linux
       uses: jirutka/setup-alpine@359b91e094d3dc6292e4b627abb84d8856ab7ef2
