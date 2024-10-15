@@ -252,7 +252,7 @@ jobs:
         submodules: recursive
     - continue-on-error: true
       name: Setup Python
-      uses: actions/setup-python@v2.2.2
+      uses: actions/setup-python@v5.2.0
       with:
         python-version: 3.7
     - continue-on-error: true
