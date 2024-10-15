@@ -253,7 +253,7 @@ jobs:
         \ url.\"https://\".insteadOf ssh:// \n"
     - continue-on-error: true
       name: "Checkout \U0001F6CE\uFE0F"
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.2.1
       with:
         fetch-depth: 0
         persist-credentials: false
