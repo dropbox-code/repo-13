@@ -2560,9 +2560,9 @@ dependencies = [
 
 [[package]]
 name = "sgx-isa"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00f56e039650326c0a88890fc86369fdaa488f38eb507f3a7b5d80353dc8f0df"
+checksum = "f0746ac51caf664e67fdb6643b27f0e29d4b9e1cea0b374644ab28bfa2b83fc9"
 dependencies = [
  "bitflags 1.2.1",
  "serde",
