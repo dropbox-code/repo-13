@@ -185,13 +185,13 @@ checksum = "d36b44c56da495a06bafa838f418023ac6b3d81fdb21ee5b7cd23f9182197b35"
 
 [[package]]
 name = "aws-nitro-enclaves-nsm-api"
-version = "0.2.1"
+version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "17e83ef53714474149215e48438d2cf8f96fb76ae5a00f21f16051fab79c0627"
+checksum = "d92c1f4471b33f6a7af9ea421b249ed18a11c71156564baf6293148fa6ad1b09"
 dependencies = [
  "libc",
  "log",
- "nix 0.20.2",
+ "nix 0.26.2",
  "serde",
  "serde_bytes",
  "serde_cbor",
@@ -1748,19 +1748,6 @@ dependencies = [
  "cfg-if 0.1.10",
  "libc",
  "void",
-]
-
-[[package]]
-name = "nix"
-version = "0.20.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f5e06129fb611568ef4e868c14b326274959aa70ff7776e9d55323531c374945"
-dependencies = [
- "bitflags 1.2.1",
- "cc",
- "cfg-if 1.0.0",
- "libc",
- "memoffset 0.6.5",
 ]
 
 [[package]]
