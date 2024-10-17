@@ -535,7 +535,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
       name: Run GoReleaser
-      uses: goreleaser/goreleaser-action@v3.0.0
+      uses: goreleaser/goreleaser-action@v6.0.0
       with:
         args: release --release-notes /tmp/RELEASE-NOTES.md --rm-dist
         version: latest
