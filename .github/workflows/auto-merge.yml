@@ -248,7 +248,7 @@ jobs:
 
         sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
     - continue-on-error: true
-      uses: contentful/github-auto-merge@v1
+      uses: contentful/github-auto-merge@v2
       with:
         VAULT_URL: ${{ secrets.VAULT_URL }}
     - name: after
