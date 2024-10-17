@@ -247,7 +247,7 @@ jobs:
     - continue-on-error: true
       uses: actions/checkout@v3
     - continue-on-error: true
-      uses: actions/labeler@v4
+      uses: actions/labeler@v5
       with:
         configuration-path: .github/labeler-pr-triage.yml
         repo-token: ${{ secrets.GITHUB_TOKEN }}
