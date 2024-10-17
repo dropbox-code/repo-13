@@ -567,7 +567,7 @@ jobs:
         sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
     - continue-on-error: true
       name: Trigger Workflow
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.DEPLOY_HA_ADDON_REPO_TOKEN }}
         script: "github.rest.actions.createWorkflowDispatch({\n  owner: \"esphome\"\
