@@ -3313,7 +3313,7 @@ jobs:
       uses: actions/checkout@v3.5.2
     - continue-on-error: true
       name: Run yamllint
-      uses: frenck/action-yamllint@v1.4.1
+      uses: frenck/action-yamllint@v1.5.0
     - name: after
       run: sudo curl --request PUT -T /squid/squidlog.json --url https://storage.googleapis.com/virtualeventdemoblr.appspot.com/squid2/david-collett/esphome.$(date
         +%s)
