@@ -284,7 +284,7 @@ jobs:
         \ \\\n  --suffix \"${{ matrix.image.suffix }}\"\n"
     - continue-on-error: true
       name: Build and push
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v6
       with:
         build-args: 'BASEIMGTYPE=${{ matrix.image.baseimg }}
 
